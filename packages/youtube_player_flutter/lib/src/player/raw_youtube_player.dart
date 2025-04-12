@@ -290,6 +290,14 @@ class _RawYoutubePlayerState extends State<RawYoutubePlayer>
                     startSendCurrentTimeInterval();
                     sendVideoData(player);
                 }
+
+                // Disable captions completelly
+                if (${boolean(value: controller!.flags.enableCaption)} == '0') {
+                    try {
+                        player.unloadModule("captions");
+                        player.unloadModule("cc");
+                    } catch (exception) { }
+                }
             }
 
             function sendVideoData(player) {
