@@ -264,7 +264,7 @@ class _RawYoutubePlayerState extends State<RawYoutubePlayer>
                         'enablejsapi': 1,
                         'fs': 0,
                         'rel': 0,
-                        'hl': 'ja',
+                        'hl': '${controller!.flags.hl}',
                         'showinfo': 0,
                         'iv_load_policy': 3,
                         'modestbranding': 1,
