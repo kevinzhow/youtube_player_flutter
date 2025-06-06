@@ -97,6 +97,13 @@ class _RawYoutubePlayerState extends State<RawYoutubePlayer>
           }
           return null;
         },
+        onLoadResource: (webController, request) async {
+          if (request.url.toString().contains('timedtext')) {
+            controller!.updateValue(
+              controller!.value.copyWith(timedText: request.url.toString()),
+            );
+          }
+        },
         onWebViewCreated: (webController) {
           controller!.updateValue(
             controller!.value.copyWith(webViewController: webController),
