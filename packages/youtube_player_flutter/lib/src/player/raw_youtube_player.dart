@@ -61,6 +61,23 @@ class _RawYoutubePlayerState extends State<RawYoutubePlayer>
     }
   }
 
+  updateMiscData(String timedText, InAppWebViewController webController) async {
+    final getCookie = "document.cookie";
+    final getUserAgent = "navigator.userAgent";
+
+    webController.evaluateJavascript(source: getCookie).then((cookies) {
+      webController.evaluateJavascript(source: getUserAgent).then((result) {
+        debugPrint(result);
+        controller!.updateValue(
+          controller!.value.copyWith(
+            timedText: timedText,
+            userAgent: result,
+          ),
+        );
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     controller = YoutubePlayerController.of(context);
@@ -91,17 +108,13 @@ class _RawYoutubePlayerState extends State<RawYoutubePlayer>
         ),
         shouldInterceptRequest: (webController, request) async {
           if (request.url.toString().contains('timedtext')) {
-            controller!.updateValue(
-              controller!.value.copyWith(timedText: request.url.toString()),
-            );
+            updateMiscData(request.url.toString(), webController);
           }
           return null;
         },
         onLoadResource: (webController, request) async {
           if (request.url.toString().contains('timedtext')) {
-            controller!.updateValue(
-              controller!.value.copyWith(timedText: request.url.toString()),
-            );
+            updateMiscData(request.url.toString(), webController);
           }
         },
         onWebViewCreated: (webController) {

@@ -35,6 +35,8 @@ class YoutubePlayerValue {
     this.isDragging = false,
     this.metaData = const YoutubeMetaData(),
     this.timedText,
+    this.userAgent,
+    this.cookies,
   });
 
   /// Returns true when the player is ready to play videos.
@@ -90,6 +92,12 @@ class YoutubePlayerValue {
   /// return timedTextURL
   final String? timedText;
 
+  /// return userAgent
+  final String? userAgent;
+
+  /// return cookies
+  final String? cookies;
+
   /// Creates new [YoutubePlayerValue] with assigned parameters and overrides
   /// the old one.
   YoutubePlayerValue copyWith({
@@ -110,6 +118,8 @@ class YoutubePlayerValue {
     bool? isDragging,
     YoutubeMetaData? metaData,
     String? timedText,
+    String? userAgent,
+    String? cookies,
   }) {
     return YoutubePlayerValue(
       isReady: isReady ?? this.isReady,
@@ -128,6 +138,8 @@ class YoutubePlayerValue {
       isDragging: isDragging ?? this.isDragging,
       metaData: metaData ?? this.metaData,
       timedText: timedText ?? this.timedText,
+      userAgent: userAgent ?? this.userAgent,
+      cookies: cookies ?? this.cookies,
     );
   }
 
@@ -145,7 +157,9 @@ class YoutubePlayerValue {
         'playbackRate: $playbackRate, '
         'playbackQuality: $playbackQuality, '
         'errorCode: $errorCode, '
-        'timedText: $timedText)';
+        'timedText: $timedText, '
+        'userAgent: $userAgent, '
+        'cookies: $cookies)';
   }
 }
 
