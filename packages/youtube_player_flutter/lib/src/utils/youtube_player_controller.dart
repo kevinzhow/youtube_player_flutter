@@ -34,6 +34,7 @@ class YoutubePlayerValue {
     this.webViewController,
     this.isDragging = false,
     this.metaData = const YoutubeMetaData(),
+    this.timedText,
   });
 
   /// Returns true when the player is ready to play videos.
@@ -86,6 +87,9 @@ class YoutubePlayerValue {
   /// Returns meta data of the currently loaded/cued video.
   final YoutubeMetaData metaData;
 
+  /// return timedTextURL
+  final String? timedText;
+
   /// Creates new [YoutubePlayerValue] with assigned parameters and overrides
   /// the old one.
   YoutubePlayerValue copyWith({
@@ -105,6 +109,7 @@ class YoutubePlayerValue {
     InAppWebViewController? webViewController,
     bool? isDragging,
     YoutubeMetaData? metaData,
+    String? timedText,
   }) {
     return YoutubePlayerValue(
       isReady: isReady ?? this.isReady,
@@ -122,6 +127,7 @@ class YoutubePlayerValue {
       webViewController: webViewController ?? this.webViewController,
       isDragging: isDragging ?? this.isDragging,
       metaData: metaData ?? this.metaData,
+      timedText: timedText ?? this.timedText,
     );
   }
 
@@ -138,7 +144,8 @@ class YoutubePlayerValue {
         'playerState: $playerState, '
         'playbackRate: $playbackRate, '
         'playbackQuality: $playbackQuality, '
-        'errorCode: $errorCode)';
+        'errorCode: $errorCode, '
+        'timedText: $timedText)';
   }
 }
 
@@ -188,6 +195,9 @@ class YoutubePlayerController extends ValueNotifier<YoutubePlayerValue> {
   /// Pauses the video.
   void pause() => _callMethod('pause()');
 
+  /// Disables the captions.
+  void disableCaptions() => _callMethod('disableCaptions()');
+
   /// Loads the video as per the [videoId] provided.
   void load(String videoId, {int startAt = 0, int? endAt}) {
     var loadParams = 'videoId:"$videoId",startSeconds:$startAt';
@@ -218,16 +228,10 @@ class YoutubePlayerController extends ValueNotifier<YoutubePlayerValue> {
 
   void _updateValues(String id) {
     if (id.length != 11) {
-      updateValue(
-        value.copyWith(
-          errorCode: 1,
-        ),
-      );
+      updateValue(value.copyWith(errorCode: 1));
       return;
     }
-    updateValue(
-      value.copyWith(errorCode: 0, hasPlayed: false),
-    );
+    updateValue(value.copyWith(errorCode: 0, hasPlayed: false));
   }
 
   /// Mutes the player.

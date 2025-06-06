@@ -14,10 +14,7 @@ import '../utils/youtube_player_controller.dart';
 /// Use [YoutubePlayer] instead.
 class RawYoutubePlayer extends StatefulWidget {
   /// Creates a [RawYoutubePlayer] widget.
-  const RawYoutubePlayer({
-    super.key,
-    this.onEnded,
-  });
+  const RawYoutubePlayer({super.key, this.onEnded});
 
   /// {@macro youtube_player_flutter.onEnded}
   final void Function(YoutubeMetaData metaData)? onEnded;
@@ -90,7 +87,16 @@ class _RawYoutubePlayerState extends State<RawYoutubePlayer>
           allowsPictureInPictureMediaPlayback: true,
           useWideViewPort: false,
           useHybridComposition: controller!.flags.useHybridComposition,
+          useShouldInterceptRequest: true,
         ),
+        shouldInterceptRequest: (webController, request) async {
+          if (request.url.toString().contains('timedtext')) {
+            controller!.updateValue(
+              controller!.value.copyWith(timedText: request.url.toString()),
+            );
+          }
+          return null;
+        },
         onWebViewCreated: (webController) {
           controller!.updateValue(
             controller!.value.copyWith(webViewController: webController),
@@ -154,9 +160,7 @@ class _RawYoutubePlayerState extends State<RawYoutubePlayer>
                     break;
                   case 5:
                     controller!.updateValue(
-                      controller!.value.copyWith(
-                        playerState: PlayerState.cued,
-                      ),
+                      controller!.value.copyWith(playerState: PlayerState.cued),
                     );
                     break;
                   default:
@@ -168,8 +172,9 @@ class _RawYoutubePlayerState extends State<RawYoutubePlayer>
               handlerName: 'PlaybackQualityChange',
               callback: (args) {
                 controller!.updateValue(
-                  controller!.value
-                      .copyWith(playbackQuality: args.first as String),
+                  controller!.value.copyWith(
+                    playbackQuality: args.first as String,
+                  ),
                 );
               },
             )
@@ -195,7 +200,8 @@ class _RawYoutubePlayerState extends State<RawYoutubePlayer>
               callback: (args) {
                 controller!.updateValue(
                   controller!.value.copyWith(
-                      metaData: YoutubeMetaData.fromRawData(args.first)),
+                    metaData: YoutubeMetaData.fromRawData(args.first),
+                  ),
                 );
               },
             )
@@ -216,9 +222,7 @@ class _RawYoutubePlayerState extends State<RawYoutubePlayer>
         onLoadStop: (_, __) {
           _onLoadStopCalled = true;
           if (_isPlayerReady) {
-            controller!.updateValue(
-              controller!.value.copyWith(isReady: true),
-            );
+            controller!.updateValue(controller!.value.copyWith(isReady: true));
           }
         },
       ),
@@ -264,7 +268,6 @@ class _RawYoutubePlayerState extends State<RawYoutubePlayer>
                         'enablejsapi': 1,
                         'fs': 0,
                         'rel': 0,
-                        'hl': '${controller!.flags.hl}',
                         'showinfo': 0,
                         'iv_load_policy': 3,
                         'modestbranding': 1,
@@ -275,7 +278,7 @@ class _RawYoutubePlayerState extends State<RawYoutubePlayer>
                         'end': ${controller!.flags.endAt}
                     },
                     events: {
-                        onReady: function(event) { window.flutter_inappwebview.callHandler('Ready'); },
+                        onReady: function(event) { window.flutter_inappwebview.callHandler('Ready');},
                         onStateChange: function(event) { sendPlayerStateChange(event.data); },
                         onPlaybackQualityChange: function(event) { window.flutter_inappwebview.callHandler('PlaybackQualityChange', event.data); },
                         onPlaybackRateChange: function(event) { window.flutter_inappwebview.callHandler('PlaybackRateChange', event.data); },
@@ -290,14 +293,6 @@ class _RawYoutubePlayerState extends State<RawYoutubePlayer>
                 if (playerState == 1) {
                     startSendCurrentTimeInterval();
                     sendVideoData(player);
-                }
-
-                // Disable captions completelly
-                if (${boolean(value: controller!.flags.enableCaption)} == '0') {
-                    try {
-                        player.unloadModule("captions");
-                        player.unloadModule("cc");
-                    } catch (exception) { }
                 }
             }
 
@@ -325,6 +320,14 @@ class _RawYoutubePlayerState extends State<RawYoutubePlayer>
             function pause() {
                 player.pauseVideo();
                 return '';
+            }
+
+            function disableCaptions() {
+                try {
+                    // Disable captions completelly
+                    player.unloadModule("captions");
+                    player.unloadModule("cc");
+                } catch (exception) { }
             }
 
             function loadById(loadSettings) {
