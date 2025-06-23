@@ -295,7 +295,8 @@ class _RawYoutubePlayerState extends State<RawYoutubePlayer>
                         'cc_lang_pref': '${controller!.flags.captionLanguage}',
                         'autoplay': ${boolean(value: controller!.flags.autoPlay)},
                         'start': ${controller!.flags.startAt},
-                        'end': ${controller!.flags.endAt}
+                        'end': ${controller!.flags.endAt},
+                        'hl': ${controller!.flags.hl}
                     },
                     events: {
                         onReady: function(event) { window.flutter_inappwebview.callHandler('Ready');},
