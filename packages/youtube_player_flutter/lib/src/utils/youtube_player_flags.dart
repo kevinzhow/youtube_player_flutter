@@ -84,25 +84,28 @@ class YoutubePlayerFlags {
   /// Default is `en`.
   final String hl;
 
+  /// Specifies the base URL for the player.
+  final String baseURL;
+
   /// Creates [YoutubePlayerFlags].
-  const YoutubePlayerFlags({
-    this.hideControls = false,
-    this.controlsVisibleAtStart = false,
-    this.autoPlay = true,
-    this.mute = false,
-    this.isLive = false,
-    this.hideThumbnail = false,
-    this.disableDragSeek = false,
-    this.enableCaption = true,
-    this.captionLanguage = 'en',
-    this.loop = false,
-    this.forceHD = false,
-    this.startAt = 0,
-    this.endAt,
-    this.useHybridComposition = true,
-    this.showLiveFullscreenButton = true,
-    this.hl = 'en',
-  });
+  const YoutubePlayerFlags(
+      {this.hideControls = false,
+      this.controlsVisibleAtStart = false,
+      this.autoPlay = true,
+      this.mute = false,
+      this.isLive = false,
+      this.hideThumbnail = false,
+      this.disableDragSeek = false,
+      this.enableCaption = true,
+      this.captionLanguage = 'en',
+      this.loop = false,
+      this.forceHD = false,
+      this.startAt = 0,
+      this.endAt,
+      this.useHybridComposition = true,
+      this.showLiveFullscreenButton = true,
+      this.hl = 'en',
+      this.baseURL = "miraa.app"});
 
   /// Copies new values assigned to the [YoutubePlayerFlags].
   YoutubePlayerFlags copyWith({
@@ -123,6 +126,7 @@ class YoutubePlayerFlags {
     bool? useHybridComposition,
     bool? showLiveFullscreenButton,
     String? hl,
+    String? baseURL,
   }) {
     return YoutubePlayerFlags(
       autoPlay: autoPlay ?? this.autoPlay,
@@ -143,6 +147,7 @@ class YoutubePlayerFlags {
       showLiveFullscreenButton:
           showLiveFullscreenButton ?? this.showLiveFullscreenButton,
       hl: hl ?? this.hl,
+      baseURL: baseURL ?? this.baseURL,
     );
   }
 }

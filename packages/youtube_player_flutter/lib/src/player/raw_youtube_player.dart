@@ -81,13 +81,16 @@ class _RawYoutubePlayerState extends State<RawYoutubePlayer>
   @override
   Widget build(BuildContext context) {
     controller = YoutubePlayerController.of(context);
+    final baseUrl = controller?.flags.baseURL == "blank"
+        ? null
+        : WebUri.uri(Uri.https(controller!.flags.baseURL!));
     return IgnorePointer(
       ignoring: true,
       child: InAppWebView(
         key: widget.key,
         initialData: InAppWebViewInitialData(
           data: player,
-          baseUrl: WebUri.uri(Uri.https('miraa.app')),
+          baseUrl: baseUrl,
           encoding: 'utf-8',
           mimeType: 'text/html',
         ),
